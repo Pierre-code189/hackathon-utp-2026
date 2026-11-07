@@ -42,6 +42,8 @@
 <h2>En emergencia (ficha demoable)</h2>
 <p>Si la situación es crítica, estos grupos de apoyo del barrio están identificados. Esta ficha es informativa; la coordinación completa es trabajo futuro.</p>
 <ul id="ficha_emerg"></ul>
+<h3>Recursos críticos (economía solidaria)</h3>
+<ul id="recursos_criticos"></ul>
 </div>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
@@ -129,4 +131,5 @@ function pintarMapa(){
 }
 cargar();
 fetch('/api/servicios?tipo=Emergencia').then(r=>r.json()).then(d=>{document.getElementById('ficha_emerg').innerHTML=d.map(g=>`<li><b>${esc(g.oficio)}</b> — ${esc(g.vecino)}${g.telefono?' · '+esc(g.telefono):''}</li>`).join('')||'<li>Sin grupos aún.</li>';}).catch(()=>{document.getElementById('ficha_emerg').innerHTML='<li>Sin conexión.</li>';});
+fetch('/api/servicios?tipo=Emergencia').then(r=>r.json()).then(async d=>{const a=await fetch('/api/asignaciones').then(r=>r.json()).catch(()=>[]); const ocupados=new Set(a.map(x=>x.recurso_id)); document.getElementById('recursos_criticos').innerHTML=d.length?d.map(g=>`<li><b>${esc(g.oficio)}</b> — ${esc(g.descripcion)} · ${ocupados.has(g.id)?'Ocupado':'Disponible'}</li>`).join(''):'<li>Sin recursos aún.</li>';}).catch(()=>{document.getElementById('recursos_criticos').innerHTML='<li>Sin conexión.</li>';});
 </script></body></html>
