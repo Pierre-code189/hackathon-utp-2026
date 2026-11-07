@@ -10,3 +10,5 @@ Emergencia como tipo con sello y filtro (2 grupos seed), marcador ⚠ Vulnerabil
 Zona del aval: tabla recomendaciones(barrio); POST recomendar acepta barrio (default Los Olivos) y devuelve vistos_zona; el badge ahora es zone-aware en backend. Solicita/Ofrece: columna accion + selector en formulario + etiqueta en tarjeta; traslado adulto mayor = Solicita. Tests: 14 passed. Vivo: Favor → Solicita/Ofrece ✓; recomendar misma zona → vistos_zona=1 ✓.
 ## Partes 3-4 (2026-11-06 21:00 hora Perú)
 Tablero: GET /api/servicios?vulnerable=1 → lista vulnerable (traslado adulto mayor). Coordinar: POST/GET /api/asignaciones (necesidad_id, recurso_id) con 404 si no existen; frontend con sección desplegable y botón Asignar recurso. Tests: 15 passed. Vivo: asignar 12→11 OK y listado OK; limpieza posterior a seed limpio.
+## Offline (2026-11-06 21:10 hora Perú)
+localStorage vr_cache: si fetch falla, se muestra la última lista guardada con aviso "Sin conexión: mostrando última lista guardada". Sin PWA (sin service worker/manifest): es límite declarado — la app se abre sin red pero no sincroniza favores offline. Verificado por grep + tests 15 passed (backend intacto).

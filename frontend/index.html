@@ -70,9 +70,19 @@ document.getElementById('tablero').addEventListener('toggle', e=>{ if(e.target.o
 function modoSimple(){document.body.classList.toggle('simple');document.getElementById('b_simple').textContent=document.body.classList.contains('simple')?'Modo simple: activado':'Modo simple (letra grande)';}
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
-  let r; try{ r=await fetch(`/api/servicios?lat=${LAT}&lng=${LNG}`);}catch(e){ document.getElementById('lista').innerHTML='<li class="card">No pudimos cargar los servicios. Reintenta.</li>'; return; }
+  let r; try{ r=await fetch(`/api/servicios?lat=${LAT}&lng=${LNG}`);}catch(e){
+    const cache=localStorage.getItem('vr_cache');
+    if(cache){SERVICIOS=JSON.parse(cache); pintar(); document.getElementById('msg').textContent='Sin conexión: mostrando última lista guardada.';}
+    else {document.getElementById('lista').innerHTML='<li class="card">Sin conexión y sin datos guardados. Conéctate una vez para sincronizar.</li>';}
+    return;
+  }
   if(!r.ok){ document.getElementById('lista').innerHTML='<li class="card">No pudimos cargar los servicios. Reintenta.</li>'; return; }
-  SERVICIOS=await r.json();
+  SERVICIOS=await r.json(); localStorage.setItem('vr_cache', JSON.stringify(SERVICIOS));
+  if(!SERVICIOS.length){document.getElementById('lista').innerHTML='<li class="card">Aún no hay vecinos publicados. Sé el primero.</li>';return;}
+  pintar();
+  if(document.getElementById('mapa').style.display==='block') pintarMapa();
+}
+function pintar(){
   if(!SERVICIOS.length){document.getElementById('lista').innerHTML='<li class="card">Aún no hay vecinos publicados. Sé el primero.</li>';return;}
   document.getElementById('lista').innerHTML=SERVICIOS.map(s=>`
     <li class="card"><b>${s.oficio}</b> — ${s.descripcion}<br>
