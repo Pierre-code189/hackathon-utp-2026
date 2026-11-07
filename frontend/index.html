@@ -97,8 +97,8 @@ async function cargar(){
 function pintar(){
   if(!SERVICIOS.length){document.getElementById('lista').innerHTML='<li class="card">Aún no hay vecinos publicados. Sé el primero.</li>';return;}
   document.getElementById('lista').innerHTML=SERVICIOS.map(s=>`
-    <li class="card"><b>${esc(s.oficio)}</b> — ${esc(s.descripcion)}<br>
-    <small>${esc(s.vecino)}${s.barrio?' · '+esc(s.barrio):''} · a ${s.distancia_km} km · ${s.tipo||'Servicio'} · ${s.accion==='Solicita'?'Se necesita':'Ofrece'} · ${s.tipo==='Emergencia'?'Modo: Emergencia':'Modo: Día a día'}</small><br>
+    <li class="card card-tipo t-${s.tipo||'Servicio'}"><b>${esc(s.oficio)}</b> — ${esc(s.descripcion)}<br>
+    <small>${esc(s.vecino)}${s.barrio?' · '+esc(s.barrio):''} · a ${s.distancia_km} km · <span class="badge-tipo b-${s.tipo||'Servicio'}">${esc(s.tipo||'Servicio')}</span> · <span class="badge-tipo b-${s.accion==='Solicita'?'Solicita':'Ofrece'}">${s.accion==='Solicita'?'Se necesita':'Ofrece'}</span> · ${s.tipo==='Emergencia'?'Modo: Emergencia':'Modo: Día a día'}</small><br>
     ${s.vulnerable?'<span class="sello" style="background:#ffe0e0">⚠ Vulnerabilidad</span> ':''}${s.telefono?`<a class="sello" style="background:#d7e9ff" href="https://wa.me/${s.telefono}" target="_blank">WhatsApp</a> `:''}${s.visto_bueno?`<span class="sello">✓ Visto bueno vecinal (${s.vistos})</span>`:`<span>Sin visto bueno aún</span>`}
     <button style="margin-left:8px" onclick="recomendar(${s.id})">Recomendar</button></li>`).join('');
   if(document.getElementById('mapa').style.display==='block') pintarMapa();

@@ -18,3 +18,5 @@ Demanda de oficio: seed "Se necesita gasfitería" (Servicio+Solicita, día a dí
 Boton "Emitir alerta con mi ubicacion": POST /api/servicios con tipo=Emergencia, vulnerable=1, accion=Solicita, lat/lng automaticas (geoloc navegador, fallback Los Olivos). Backend sin cambios (endpoint ya soportaba vulnerable+tipo). Verificado en vivo: 1 clic crea alerta y aparece en ?vulnerable=1 junto al traslado. Prueba limpiada despues.
 ## Parte C (2026-11-06 22:40 hora Perú)
 Seccion "Recursos criticos (economia solidaria)": lista tipo=Emergencia (3 recursos: atencion medica, primeros auxilios, red de agua/alimentos) con estado Disponible/Ocupado derivado de GET /api/asignaciones (sin backend nuevo). Verificado en vivo: 3 recursos listados, asignaciones=0 => todo Disponible. Residuo de pruebas limpiado.
+## Diseño color (2026-11-06 22:50 hora Perú)
+Tokens: confianza #1B8A5A (servicio/sello), solicita #5B8DEF, ofrece #8B5CF6, emergencia #D32F2F, aviso #F9A825. Tarjetas con borde izquierdo por tipo + badges b-Servicio/b-Producto/b-Favor/b-Emergencia y Solicita/Ofrece. Boton alerta btn-alerta rojo. Captura 390px revisada.
