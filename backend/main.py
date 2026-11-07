@@ -23,9 +23,14 @@ CREATE TABLE IF NOT EXISTS servicios (
   barrio TEXT,
   lat REAL, lng REAL,
   vistos INTEGER DEFAULT 0,
-  creado REAL DEFAULT 0
+  creado REAL DEFAULT 0,
+  tipo TEXT DEFAULT 'Servicio'
 );
 """)
+    cols=[r[1] for r in conn.execute("PRAGMA table_info(servicios)").fetchall()]
+    if "tipo" not in cols:
+        conn.execute("ALTER TABLE servicios ADD COLUMN tipo TEXT DEFAULT 'Servicio'")
+        conn.commit()
     return conn
 
 SEED = [
@@ -34,14 +39,18 @@ SEED = [
   ("Cerrajería", "Aperturas 24h, cambios de chapa", "Luis Torres", "Los Olivos", -11.980, -77.073, 5),
   ("Electricidad", "Instalaciones y reparaciones", "Pedro Díaz", "Los Olivos", -11.978, -77.068, 1),
   ("Clases de matemática", "Refuerzo escolar 1.° a 5.° secundaria", "Ana López", "Los Olivos", -11.990, -77.075, 4),
+  ("Almuerzo casero", "Plato del día + sopa, entrega a domicilio", "Carmen Vega", "Los Olivos", -11.983, -77.071, 2),
+  ("Silla de ruedas", "Alquiler por días, trae a domicilio", "Miguel Ríos", "Los Olivos", -11.979, -77.074, 1),
+  ("Préstamo de taladro", "Ofrezco taladro 2 h, recoger", "Diego Flores", "Los Olivos", -11.984, -77.066, 3),
+  ("Ayuda traslado adulto mayor", "Necesito apoyo para trasladar a mi mamá a la posta", "Sofía Marín", "Los Olivos", -11.987, -77.072, 0),
 ]
 
 def seed_if_empty():
     conn = get_db()
     n = conn.execute("SELECT COUNT(*) FROM servicios").fetchone()[0]
     if n == 0:
-        conn.executemany("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado) VALUES (?,?,?,?,?,?,?,?)",
-            [(o,d,v,b,la,ln,vi,time.time()) for o,d,v,b,la,ln,vi in SEED])
+        conn.executemany("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo) VALUES (?,?,?,?,?,?,?,?,?)",
+            [(o,d,v,b,la,ln,vi,time.time(),"Servicio" if i<5 else ("Producto" if i<7 else "Favor")) for i,(o,d,v,b,la,ln,vi) in enumerate(SEED)])
         conn.commit()
     conn.close()
 
@@ -59,6 +68,7 @@ class NuevoServicio(BaseModel):
     barrio: str = ""
     lat: float = -11.981
     lng: float = -77.072
+    tipo: str = "Servicio"
 
 @app.get("/health")
 def health():
@@ -69,9 +79,12 @@ def hello():
     return {"message": "Vecino Recomienda — esqueleto listo.", "status": "skeleton"}
 
 @app.get("/api/servicios")
-def listar(lat: float = -11.981, lng: float = -77.072):
+def listar(lat: float = -11.981, lng: float = -77.072, tipo: str = ""):
     conn = get_db()
-    rows = conn.execute("SELECT * FROM servicios ORDER BY creado DESC").fetchall()
+    if tipo:
+        rows = conn.execute("SELECT * FROM servicios WHERE tipo=? ORDER BY creado DESC", (tipo,)).fetchall()
+    else:
+        rows = conn.execute("SELECT * FROM servicios ORDER BY creado DESC").fetchall()
     conn.close()
     out = []
     for r in rows:
@@ -85,8 +98,9 @@ def crear(s: NuevoServicio):
     if not s.oficio.strip() or not s.descripcion.strip():
         raise HTTPException(status_code=422, detail="oficio y descripcion son obligatorios")
     conn = get_db()
-    cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado) VALUES (?,?,?,?,?,?,0,?)",
-        (s.oficio.strip(), s.descripcion.strip(), s.vecino.strip() or "Vecino", s.barrio.strip(), s.lat, s.lng, time.time()))
+    tipo = s.tipo if s.tipo in ("Servicio","Producto","Favor") else "Servicio"
+    cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo) VALUES (?,?,?,?,?,?,0,?,?)",
+        (s.oficio.strip(), s.descripcion.strip(), s.vecino.strip() or "Vecino", s.barrio.strip(), s.lat, s.lng, time.time(), tipo))
     conn.commit(); conn.close()
     return {"id": cur.lastrowid, "oficio": s.oficio}
 

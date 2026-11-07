@@ -13,9 +13,17 @@
 <label>1. ¿Qué ofreces? <input id="oficio" placeholder="Ej: Cerrajería 24h" required></label>
 <label>2. Descríbelo en una línea <input id="descripcion" placeholder="Ej: Aperturas y cambios de chapa" required></label>
 <label>3. Tu nombre <input id="vecino" placeholder="Ej: Luis Torres" required></label>
+<label>Tipo <select id="tipo" style="width:100%;padding:10px;margin:4px 0 10px">
+<option value="Servicio">Servicio</option><option value="Producto">Producto</option><option value="Favor">Favor / Ayuda</option></select></label>
 <button type="submit">Publicar</button>
 <p id="msg"></p>
 </form>
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0">
+<button type="button" onclick="filtrar('')">Todo</button>
+<button type="button" onclick="filtrar('Servicio')">Servicios</button>
+<button type="button" onclick="filtrar('Producto')">Productos</button>
+<button type="button" onclick="filtrar('Favor')">Ayuda</button>
+</div>
 <h2>Cerca de ti (ordenado por distancia)</h2>
 <ul id="lista" style="list-style:none;padding:0"></ul>
 <div id="mapa"></div>
@@ -28,7 +36,8 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-let LAT=-11.981, LNG=-77.072, SERVICIOS=[];
+let LAT=-11.981, LNG=-77.072, SERVICIOS=[], FILTRO='';
+function filtrar(f){FILTRO=f;cargar();}
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
   let r; try{ r=await fetch(`/api/servicios?lat=${LAT}&lng=${LNG}`);}catch(e){ document.getElementById('lista').innerHTML='<li class="card">No pudimos cargar los servicios. Reintenta.</li>'; return; }
@@ -37,14 +46,14 @@ async function cargar(){
   if(!SERVICIOS.length){document.getElementById('lista').innerHTML='<li class="card">Aún no hay vecinos publicados. Sé el primero.</li>';return;}
   document.getElementById('lista').innerHTML=SERVICIOS.map(s=>`
     <li class="card"><b>${s.oficio}</b> — ${s.descripcion}<br>
-    <small>${s.vecino}${s.barrio?' · '+s.barrio:''} · a ${s.distancia_km} km</small><br>
+    <small>${s.vecino}${s.barrio?' · '+s.barrio:''} · a ${s.distancia_km} km · ${s.tipo||'Servicio'}</small><br>
     ${s.visto_bueno?`<span class="sello">✓ Visto bueno vecinal (${s.vistos})</span>`:`<span>Sin visto bueno aún</span>`}
     <button style="margin-left:8px" onclick="recomendar(${s.id})">Recomendar</button></li>`).join('');
   if(document.getElementById('mapa').style.display==='block') pintarMapa();
 }
 async function publicar(e){
   e.preventDefault();
-  const body={oficio:oficio.value, descripcion:descripcion.value, vecino:vecino.value, barrio:'Los Olivos', lat:LAT, lng:LNG};
+  const body={oficio:oficio.value, descripcion:descripcion.value, vecino:vecino.value, barrio:'Los Olivos', lat:LAT, lng:LNG, tipo:document.getElementById('tipo').value};
   const r=await fetch('/api/servicios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const msg=document.getElementById('msg');
   msg.textContent = r.ok ? 'Publicado. ¡Gracias por compartir!' : 'Revisa los campos.';
