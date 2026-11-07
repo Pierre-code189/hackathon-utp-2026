@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
-import os, sqlite3, math, time
+import os, sqlite3, math, time, html
 
 app = FastAPI(title="Vecino Recomienda — Hackathon UTP 2026", version="0.1.0-slice")
 
@@ -105,7 +105,9 @@ def hello():
 @app.get("/api/servicios")
 def listar(lat: float = -11.981, lng: float = -77.072, tipo: str = "", vulnerable: bool = False):
     conn = get_db()
-    if vulnerable:
+    if vulnerable and tipo:
+        rows = conn.execute("SELECT * FROM servicios WHERE vulnerable=1 AND tipo=? ORDER BY creado DESC", (tipo,)).fetchall()
+    elif vulnerable:
         rows = conn.execute("SELECT * FROM servicios WHERE vulnerable=1 ORDER BY creado DESC").fetchall()
     elif tipo:
         rows = conn.execute("SELECT * FROM servicios WHERE tipo=? ORDER BY creado DESC", (tipo,)).fetchall()
@@ -123,11 +125,19 @@ def listar(lat: float = -11.981, lng: float = -77.072, tipo: str = "", vulnerabl
 def crear(s: NuevoServicio):
     if not s.oficio.strip() or not s.descripcion.strip():
         raise HTTPException(status_code=422, detail="oficio y descripcion son obligatorios")
+    if not (-90 <= s.lat <= 90 and -180 <= s.lng <= 180):
+        raise HTTPException(status_code=422, detail="lat/lng fuera de rango")
+    if len(s.oficio) > 120 or len(s.descripcion) > 500 or len(s.vecino) > 80:
+        raise HTTPException(status_code=422, detail="texto demasiado largo")
+    if s.tipo not in ("Servicio","Producto","Favor","Emergencia"):
+        raise HTTPException(status_code=422, detail="tipo invalido")
+    if s.accion not in ("Ofrece","Solicita"):
+        raise HTTPException(status_code=422, detail="accion invalida")
     conn = get_db()
     tipo = s.tipo if s.tipo in ("Servicio","Producto","Favor","Emergencia") else "Servicio"
     accion = s.accion if s.accion in ("Ofrece","Solicita") else "Ofrece"
     cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo,telefono,vulnerable,accion) VALUES (?,?,?,?,?,?,0,?,?,?,?,?)",
-        (s.oficio.strip(), s.descripcion.strip(), s.vecino.strip() or "Vecino", s.barrio.strip(), s.lat, s.lng, time.time(), tipo, s.telefono.strip() or None, 1 if s.vulnerable else 0, accion))
+        (html.escape(s.oficio.strip()), html.escape(s.descripcion.strip()), html.escape(s.vecino.strip() or "Vecino"), html.escape(s.barrio.strip()), s.lat, s.lng, time.time(), tipo, s.telefono.strip() or None, 1 if s.vulnerable else 0, accion))
     conn.commit(); conn.close()
     return {"id": cur.lastrowid, "oficio": s.oficio}
 
@@ -143,6 +153,13 @@ def crear_asignacion(a: AsignacionBody):
     if not nec or not rec:
         conn.close()
         raise HTTPException(status_code=404, detail="necesidad o recurso no encontrado")
+    if a.necesidad_id == a.recurso_id:
+        conn.close()
+        raise HTTPException(status_code=422, detail="necesidad y recurso no pueden ser el mismo")
+    dup = conn.execute("SELECT id FROM asignaciones WHERE necesidad_id=? AND recurso_id=?", (a.necesidad_id, a.recurso_id)).fetchone()
+    if dup:
+        conn.close()
+        raise HTTPException(status_code=409, detail="asignacion duplicada")
     cur = conn.execute("INSERT INTO asignaciones (necesidad_id, recurso_id, creado) VALUES (?,?,?)", (a.necesidad_id, a.recurso_id, time.time()))
     conn.commit(); conn.close()
     return {"id": cur.lastrowid, "necesidad_id": a.necesidad_id, "recurso_id": a.recurso_id}
@@ -164,7 +181,7 @@ def recomendar(sid: int, body: RecomendarBody = None):
     if not row:
         conn.close()
         raise HTTPException(status_code=404, detail="servicio no encontrado")
-    barrio = (body.barrio.strip() if body and body.barrio else "Los Olivos")
+    barrio = (body.barrio.strip() if body and body.barrio and body.barrio.strip() else "Los Olivos")
     # zona: el aval solo suma a "tu zona" si el recomendante es del mismo barrio del servicio
     conn.execute("INSERT INTO recomendaciones (servicio_id, barrio, creado) VALUES (?,?,?)", (sid, barrio, time.time()))
     conn.execute("UPDATE servicios SET vistos = vistos + 1 WHERE id=?", (sid,))

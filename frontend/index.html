@@ -40,11 +40,12 @@
 <div class="emerg">
 <h2>En emergencia (ficha demoable)</h2>
 <p>Si la situación es crítica, estos grupos de apoyo del barrio están identificados. Esta ficha es informativa; la coordinación completa es trabajo futuro.</p>
-<ul><li><b>Comité barrial de emergencia</b> — Los Olivos · coordina albergue temporal</li><li><b>Vecinos primeros auxilios</b> — Los Olivos · botiquín y traslado</li><li><b>Red de agua y alimentos</b> — Los Olivos · distribución solidaria</li></ul>
+<ul id="ficha_emerg"></ul>
 </div>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 let LAT=-11.981, LNG=-77.072, SERVICIOS=[], FILTRO='';
 function filtrar(f){FILTRO=f;cargar();}
 async function cargarTablero(){
@@ -57,12 +58,14 @@ async function cargarTablero(){
   const recursos = nec.filter(s=>s.accion!=='Solicita');
   document.getElementById('tablero_cuerpo').innerHTML =
     '<h3>Vulnerabilidades</h3>' + (v.length?v.map(s=>`<p>⚠ ${s.oficio} — ${s.vecino} (${s.barrio||''})</p>`).join(''):'<p>Sin registros.</p>') +
-    '<h3>Coordinar recurso → necesidad</h3>' + (nec.length?nec.map(n=>`<p>${n.accion==='Solicita'?'🙋':'🙌'} ${n.oficio} — ${n.vecino} <button type="button" onclick="asignar(${n.id})">Asignar recurso</button></p>`).join(''):'<p>Sin favores.</p>') +
+    '<h3>Coordinar recurso → necesidad</h3>' + (nec.filter(n=>n.accion==='Solicita').length?nec.filter(n=>n.accion==='Solicita').map(n=>`<p>🙋 ${esc(n.oficio)} — ${esc(n.vecino)} <button type="button" onclick="asignar(${n.id})">Asignar recurso</button></p>`).join(''):'<p>Sin necesidades pendientes.</p>') +
     '<h3>Asignaciones</h3>' + (asig.length?asig.map(a=>`<p>✓ ${a.recurso} → ${a.necesidad}</p>`).join(''):'<p>Sin asignaciones aún.</p>');
 }
 async function asignar(necesidad_id){
-  const rec = SERVICIOS.find(s=>s.tipo==='Favor' && s.accion!=='Solicita' && s.id!==necesidad_id) || SERVICIOS.find(s=>s.id!==necesidad_id && s.accion!=='Solicita');
-  const recurso_id = rec ? rec.id : 8;
+  const favores = await fetch('/api/servicios?tipo=Favor').then(r=>r.json()).catch(()=>SERVICIOS);
+  const rec = favores.find(s=>s.accion!=='Solicita' && s.id!==necesidad_id);
+  if(!rec){alert('No hay recurso disponible para asignar.');return;}
+  const recurso_id = rec.id;
   const r = await fetch('/api/asignaciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({necesidad_id,recurso_id})});
   if(r.ok) cargarTablero(); else alert('No se pudo asignar.');
 }
@@ -86,8 +89,8 @@ async function cargar(){
 function pintar(){
   if(!SERVICIOS.length){document.getElementById('lista').innerHTML='<li class="card">Aún no hay vecinos publicados. Sé el primero.</li>';return;}
   document.getElementById('lista').innerHTML=SERVICIOS.map(s=>`
-    <li class="card"><b>${s.oficio}</b> — ${s.descripcion}<br>
-    <small>${s.vecino}${s.barrio?' · '+s.barrio:''} · a ${s.distancia_km} km · ${s.tipo||'Servicio'} · ${s.accion==='Solicita'?'Se necesita':'Ofrece'} · ${s.tipo==='Emergencia'?'Modo: Emergencia':'Modo: Día a día'}</small><br>
+    <li class="card"><b>${esc(s.oficio)}</b> — ${esc(s.descripcion)}<br>
+    <small>${esc(s.vecino)}${s.barrio?' · '+esc(s.barrio):''} · a ${s.distancia_km} km · ${s.tipo||'Servicio'} · ${s.accion==='Solicita'?'Se necesita':'Ofrece'} · ${s.tipo==='Emergencia'?'Modo: Emergencia':'Modo: Día a día'}</small><br>
     ${s.vulnerable?'<span class="sello" style="background:#ffe0e0">⚠ Vulnerabilidad</span> ':''}${s.telefono?`<a class="sello" style="background:#d7e9ff" href="https://wa.me/${s.telefono}" target="_blank">WhatsApp</a> `:''}${s.visto_bueno?`<span class="sello">✓ Visto bueno vecinal (${s.vistos})</span>`:`<span>Sin visto bueno aún</span>`}
     <button style="margin-left:8px" onclick="recomendar(${s.id})">Recomendar</button></li>`).join('');
   if(document.getElementById('mapa').style.display==='block') pintarMapa();
@@ -98,10 +101,10 @@ async function publicar(e){
   const r=await fetch('/api/servicios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const msg=document.getElementById('msg');
   msg.textContent = r.ok ? 'Publicado. ¡Gracias por compartir!' : 'Revisa los campos.';
-  if(r.ok){e.target.reset();cargar();}
+  if(r.ok){e.target.reset();document.getElementById('telefono').value='';document.getElementById('vulnerable').checked=false;document.getElementById('tipo').value='Servicio';document.getElementById('accion').value='Ofrece';cargar();}
   return false;
 }
-async function recomendar(id){await fetch(`/api/servicios/${id}/recomendar`,{method:'POST'});cargar();}
+async function recomendar(id){const r=await fetch(`/api/servicios/${id}/recomendar`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({barrio:'Los Olivos'})});if(r.ok)cargar();}
 function activarMapa(){
   const m=document.getElementById('mapa');
   if(typeof L==='undefined'){document.getElementById('notamapa').textContent='Mapa no disponible sin internet: la lista ordenada es tu vista principal (offline).';return;}
@@ -119,4 +122,5 @@ function pintarMapa(){
   }catch(e){/* fallback silencioso a la lista */}
 }
 cargar();
+fetch('/api/servicios?tipo=Emergencia').then(r=>r.json()).then(d=>{document.getElementById('ficha_emerg').innerHTML=d.map(g=>`<li><b>${esc(g.oficio)}</b> — ${esc(g.vecino)}${g.telefono?' · '+esc(g.telefono):''}</li>`).join('')||'<li>Sin grupos aún.</li>';}).catch(()=>{document.getElementById('ficha_emerg').innerHTML='<li>Sin conexión.</li>';});
 </script></body></html>

@@ -19,3 +19,8 @@ Sin prueba en teléfono real ni con adultos mayores; capturas 390px sí revisada
 - Causa: `filtrar()` guarda FILTRO pero `cargar()` hacia fetch sin `&tipo=` (la URL con FILTRO se habia perdido al extraer pintar()). Backend si filtraba (curl tipo=Producto OK), la UI siempre mostraba Todo.
 - Fix: URL = `/api/servicios?lat&lng` + (FILTRO?`&tipo=...`:'') en cargar(). Tests 15 passed, frontend 200.
 - Correccion del bug conocido de autoasignacion (taladro->taladro): se corrige en la misma pasada (filtrar recurso excluyendo el propio id).
+## Fixes 2026-11-06 22:15 (post-auditoria, sin codigo roto)
+Backend: 422 geo/tipo/accion, max_length, html.escape al guardar, ?vulnerable+tipo=AND, barrio vacio consistente (default), asignaciones self 422 y duplicada 409.
+Frontend: esc() en innerHTML, asignar() con fetch a favores reales + excluye self + solo Solicita, recomendar con barrio explicito, reset telefono/vulnerable, WhatsApp normalizado 51, ficha emergencia con datos reales.
+Telefono en listado: se mantiene visible por requisito de WhatsApp en demo (riesgo aceptado en hackathon, sin auth). Auth/rate-limit queda deuda pre-produccion.
+Verificacion: curl geo 422 + tipo 422 + XSS escapado, autoasign 422, dup 409. Tests 15 passed.
