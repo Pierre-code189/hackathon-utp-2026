@@ -1,6 +1,6 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vecino Recomienda</title>
-<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:24px auto;padding:0 16px} h1{font-size:26px} .badge{background:#111;color:#fff;padding:4px 10px;border-radius:999px;font-size:13px} button{padding:10px 16px;cursor:pointer} input{width:100%;padding:10px;margin:4px 0 10px;box-sizing:border-box} .card{border:1px solid #ddd;border-radius:10px;padding:14px;margin:10px 0} .sello{background:#e6f4ea;padding:2px 8px;border-radius:999px;font-size:13px} .emerg{background:#fff7e6;border:1px solid #f0c040;border-radius:10px;padding:14px;margin:12px 0} #mapa{height:280px;border-radius:10px;border:1px solid #ddd;margin:10px 0;display:none} .notas{font-size:13px;color:#555}</style>
+<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:24px auto;padding:0 16px;font-size:16px;line-height:1.5} button{min-height:44px;padding:10px 16px;font-size:16px} .simple{font-size:19px} .simple button{min-height:52px;font-size:18px} h1{font-size:26px} .badge{background:#111;color:#fff;padding:4px 10px;border-radius:999px;font-size:13px} button{padding:10px 16px;cursor:pointer} input{width:100%;padding:10px;margin:4px 0 10px;box-sizing:border-box} .card{border:1px solid #ddd;border-radius:10px;padding:14px;margin:10px 0} .sello{background:#e6f4ea;padding:2px 8px;border-radius:999px;font-size:13px} .emerg{background:#fff7e6;border:1px solid #f0c040;border-radius:10px;padding:14px;margin:12px 0} #mapa{height:280px;border-radius:10px;border:1px solid #ddd;margin:10px 0;display:none} .notas{font-size:13px;color:#555}</style>
 </head><body>
 <span class="badge">VECINO RECOMIENDA · HACKATHON UTP 2026</span>
 <h1>Vecino Recomienda</h1>
@@ -8,13 +8,16 @@
 <details><summary><b>Tutorial rápido (1 min)</b></summary>
 <ol><li>Escribe qué ofreces y tu nombre (clic 1-2).</li><li>Publica con tu ubicación automática (clic 3).</li><li>Busca cerca de ti, mira el sello ✓ y pulsa <i>Recomendar</i> si ya lo probaste.</li></ol>
 </details>
+<p><button type="button" id="b_simple" onclick="modoSimple()">Modo simple (letra grande)</button></p>
 <h2>Publicar un servicio (3 clics)</h2>
+<label>Teléfono (opcional) <input id="telefono" inputmode="tel" placeholder="Ej: 987654321"></label>
+<label style="display:block;margin:6px 0"><input type="checkbox" id="vulnerable" style="width:auto"> Soy vecino en situación de vulnerabilidad</label>
 <form id="f" onsubmit="return publicar(event)">
 <label>1. ¿Qué ofreces? <input id="oficio" placeholder="Ej: Cerrajería 24h" required></label>
 <label>2. Descríbelo en una línea <input id="descripcion" placeholder="Ej: Aperturas y cambios de chapa" required></label>
 <label>3. Tu nombre <input id="vecino" placeholder="Ej: Luis Torres" required></label>
 <label>Tipo <select id="tipo" style="width:100%;padding:10px;margin:4px 0 10px">
-<option value="Servicio">Servicio</option><option value="Producto">Producto</option><option value="Favor">Favor / Ayuda</option></select></label>
+<option value="Servicio">Servicio</option><option value="Producto">Producto</option><option value="Emergencia">Emergencia (grupo de apoyo)</option><option value="Favor">Favor / Ayuda</option></select></label>
 <button type="submit">Publicar</button>
 <p id="msg"></p>
 </form>
@@ -23,6 +26,7 @@
 <button type="button" onclick="filtrar('Servicio')">Servicios</button>
 <button type="button" onclick="filtrar('Producto')">Productos</button>
 <button type="button" onclick="filtrar('Favor')">Ayuda</button>
+<button type="button" onclick="filtrar('Emergencia')">Emergencia</button>
 </div>
 <h2>Cerca de ti (ordenado por distancia)</h2>
 <ul id="lista" style="list-style:none;padding:0"></ul>
@@ -38,6 +42,7 @@
 <script>
 let LAT=-11.981, LNG=-77.072, SERVICIOS=[], FILTRO='';
 function filtrar(f){FILTRO=f;cargar();}
+function modoSimple(){document.body.classList.toggle('simple');document.getElementById('b_simple').textContent=document.body.classList.contains('simple')?'Modo simple: activado':'Modo simple (letra grande)';}
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
   let r; try{ r=await fetch(`/api/servicios?lat=${LAT}&lng=${LNG}`);}catch(e){ document.getElementById('lista').innerHTML='<li class="card">No pudimos cargar los servicios. Reintenta.</li>'; return; }
@@ -47,13 +52,13 @@ async function cargar(){
   document.getElementById('lista').innerHTML=SERVICIOS.map(s=>`
     <li class="card"><b>${s.oficio}</b> — ${s.descripcion}<br>
     <small>${s.vecino}${s.barrio?' · '+s.barrio:''} · a ${s.distancia_km} km · ${s.tipo||'Servicio'}</small><br>
-    ${s.visto_bueno?`<span class="sello">✓ Visto bueno vecinal (${s.vistos})</span>`:`<span>Sin visto bueno aún</span>`}
+    ${s.vulnerable?'<span class="sello" style="background:#ffe0e0">⚠ Vulnerabilidad</span> ':''}${s.telefono?`<a class="sello" style="background:#d7e9ff" href="https://wa.me/${s.telefono}" target="_blank">WhatsApp</a> `:''}${s.visto_bueno?`<span class="sello">✓ Visto bueno vecinal (${s.vistos})</span>`:`<span>Sin visto bueno aún</span>`}
     <button style="margin-left:8px" onclick="recomendar(${s.id})">Recomendar</button></li>`).join('');
   if(document.getElementById('mapa').style.display==='block') pintarMapa();
 }
 async function publicar(e){
   e.preventDefault();
-  const body={oficio:oficio.value, descripcion:descripcion.value, vecino:vecino.value, barrio:'Los Olivos', lat:LAT, lng:LNG, tipo:document.getElementById('tipo').value};
+  const body={oficio:oficio.value, descripcion:descripcion.value, vecino:vecino.value, barrio:'Los Olivos', lat:LAT, lng:LNG, tipo:document.getElementById('tipo').value, telefono:document.getElementById('telefono').value, vulnerable:document.getElementById('vulnerable').checked};
   const r=await fetch('/api/servicios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
   const msg=document.getElementById('msg');
   msg.textContent = r.ok ? 'Publicado. ¡Gracias por compartir!' : 'Revisa los campos.';

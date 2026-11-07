@@ -24,13 +24,19 @@ CREATE TABLE IF NOT EXISTS servicios (
   lat REAL, lng REAL,
   vistos INTEGER DEFAULT 0,
   creado REAL DEFAULT 0,
-  tipo TEXT DEFAULT 'Servicio'
+  tipo TEXT DEFAULT 'Servicio',
+  telefono TEXT,
+  vulnerable INTEGER DEFAULT 0
 );
 """)
     cols=[r[1] for r in conn.execute("PRAGMA table_info(servicios)").fetchall()]
     if "tipo" not in cols:
         conn.execute("ALTER TABLE servicios ADD COLUMN tipo TEXT DEFAULT 'Servicio'")
-        conn.commit()
+    if "telefono" not in cols:
+        conn.execute("ALTER TABLE servicios ADD COLUMN telefono TEXT")
+    if "vulnerable" not in cols:
+        conn.execute("ALTER TABLE servicios ADD COLUMN vulnerable INTEGER DEFAULT 0")
+    conn.commit()
     return conn
 
 SEED = [
@@ -69,6 +75,8 @@ class NuevoServicio(BaseModel):
     lat: float = -11.981
     lng: float = -77.072
     tipo: str = "Servicio"
+    telefono: str = ""
+    vulnerable: bool = False
 
 @app.get("/health")
 def health():
@@ -98,9 +106,9 @@ def crear(s: NuevoServicio):
     if not s.oficio.strip() or not s.descripcion.strip():
         raise HTTPException(status_code=422, detail="oficio y descripcion son obligatorios")
     conn = get_db()
-    tipo = s.tipo if s.tipo in ("Servicio","Producto","Favor") else "Servicio"
-    cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo) VALUES (?,?,?,?,?,?,0,?,?)",
-        (s.oficio.strip(), s.descripcion.strip(), s.vecino.strip() or "Vecino", s.barrio.strip(), s.lat, s.lng, time.time(), tipo))
+    tipo = s.tipo if s.tipo in ("Servicio","Producto","Favor","Emergencia") else "Servicio"
+    cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo,telefono,vulnerable) VALUES (?,?,?,?,?,?,0,?,?,?,?)",
+        (s.oficio.strip(), s.descripcion.strip(), s.vecino.strip() or "Vecino", s.barrio.strip(), s.lat, s.lng, time.time(), tipo, s.telefono.strip() or None, 1 if s.vulnerable else 0))
     conn.commit(); conn.close()
     return {"id": cur.lastrowid, "oficio": s.oficio}
 
