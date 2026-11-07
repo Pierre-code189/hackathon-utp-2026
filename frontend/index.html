@@ -38,6 +38,7 @@
 <div id="tablero_cuerpo"></div>
 </details>
 <div class="emerg">
+<p><button type="button" id="b_alerta" style="background:#c0392b;color:#fff;min-height:48px" onclick="emitirAlerta()">⚠ Emitir alerta con mi ubicación</button></p>
 <h2>En emergencia (ficha demoable)</h2>
 <p>Si la situación es crítica, estos grupos de apoyo del barrio están identificados. Esta ficha es informativa; la coordinación completa es trabajo futuro.</p>
 <ul id="ficha_emerg"></ul>
@@ -70,6 +71,11 @@ async function asignar(necesidad_id){
   if(r.ok) cargarTablero(); else alert('No se pudo asignar.');
 }
 document.getElementById('tablero').addEventListener('toggle', e=>{ if(e.target.open) cargarTablero(); });
+async function emitirAlerta(){
+  const r=await fetch('/api/servicios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({oficio:'Alerta de vecino', descripcion:'Alerta desde la app con ubicación automática', vecino:'Vecino en alerta', barrio:'Los Olivos', lat:LAT, lng:LNG, tipo:'Emergencia', vulnerable:true, accion:'Solicita'})});
+  if(r.ok){cargarTablero(); alert('Alerta emitida con tu ubicación. Aparece en el tablero.'); cargar();}
+  else {alert('No se pudo emitir la alerta.');}
+}
 function modoSimple(){document.body.classList.toggle('simple');document.getElementById('b_simple').textContent=document.body.classList.contains('simple')?'Modo simple: activado':'Modo simple (letra grande)';}
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
