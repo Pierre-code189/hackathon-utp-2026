@@ -24,3 +24,11 @@ Backend: 422 geo/tipo/accion, max_length, html.escape al guardar, ?vulnerable+ti
 Frontend: esc() en innerHTML, asignar() con fetch a favores reales + excluye self + solo Solicita, recomendar con barrio explicito, reset telefono/vulnerable, WhatsApp normalizado 51, ficha emergencia con datos reales.
 Telefono en listado: se mantiene visible por requisito de WhatsApp en demo (riesgo aceptado en hackathon, sin auth). Auth/rate-limit queda deuda pre-produccion.
 Verificacion: curl geo 422 + tipo 422 + XSS escapado, autoasign 422, dup 409. Tests 15 passed.
+## Auditoría 5 frentes + cierre (2026-11-06 23:05 hora Perú)
+QA encontró: vulnerable=false ignorado, geo GET sin rango, asignacion invertida aceptada, seed Emergencia vacio en BD limpia, etc.
+Cierre aplicado:
+- DB real restaurada a seed limpio: 13 servicios (vistos originales), 0 recomendaciones, 0 asignaciones. QA ids borrados (27-39), alerta de prueba borrada.
+- Seed ampliado en backend/main.py: 13 registros (incluye 3 Emergencia + Demanda) -> BD limpia ya no queda vacia en Emergencia (verificado /tmp/seed_test.db: 3).
+- Fix vulnerable: param None (sin param=todos), true=1, false=no-vuln; combinado tipo+vuln = AND. Verificado en vivo: tipo=Favor 2, vuln=true 1, vuln=false 12 (0 vuln dentro), sin param 13.
+- Tests 15 passed.
+Pendiente post-demo (no bloqueante): geo GET 422, asignacion roles Solicita->Ofrece, auth/rate-limit, OpenAPI docs.

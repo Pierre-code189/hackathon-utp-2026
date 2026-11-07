@@ -64,6 +64,10 @@ SEED = [
   ("Silla de ruedas", "Alquiler por días, trae a domicilio", "Miguel Ríos", "Los Olivos", -11.979, -77.074, 1),
   ("Préstamo de taladro", "Ofrezco taladro 2 h, recoger", "Diego Flores", "Los Olivos", -11.984, -77.066, 3),
   ("Ayuda traslado adulto mayor", "Necesito apoyo para trasladar a mi mamá a la posta", "Sofía Marín", "Los Olivos", -11.987, -77.072, 0),
+  ("Grupos de apoyo — primeros auxilios", "Botiquín y traslado, disponible 24h", "Comité barrial", "Los Olivos", -11.982, -77.069, 4),
+  ("Red de agua y alimentos", "Distribución solidaria en emergencia", "Vecinos unidos", "Los Olivos", -11.986, -77.071, 2),
+  ("Se necesita gasfitería", "Busco gasfitero para fuga en cocina, hoy", "Mariana Ruiz", "Los Olivos", -11.9825, -77.0695, 0),
+  ("Atención médica 24h (emergencia)", "Médico de turno para urgencias en el barrio", "Dr. Jorge Salas", "Los Olivos", -11.9815, -77.0715, 2),
 ]
 
 def seed_if_empty():
@@ -71,7 +75,7 @@ def seed_if_empty():
     n = conn.execute("SELECT COUNT(*) FROM servicios").fetchone()[0]
     if n == 0:
         conn.executemany("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo) VALUES (?,?,?,?,?,?,?,?,?)",
-            [(o,d,v,b,la,ln,vi,time.time(),"Servicio" if i<5 else ("Producto" if i<7 else "Favor")) for i,(o,d,v,b,la,ln,vi) in enumerate(SEED)])
+            [(o,d,v,b,la,ln,vi,time.time(),"Servicio" if i<5 else ("Producto" if i<7 else ("Favor" if i<9 else ("Emergencia" if i<12 else "Servicio")))) for i,(o,d,v,b,la,ln,vi) in enumerate(SEED)])
         conn.commit()
     conn.close()
 
@@ -103,9 +107,12 @@ def hello():
     return {"message": "Vecino Recomienda — esqueleto listo.", "status": "skeleton"}
 
 @app.get("/api/servicios")
-def listar(lat: float = -11.981, lng: float = -77.072, tipo: str = "", vulnerable: bool = False):
+def listar(lat: float = -11.981, lng: float = -77.072, tipo: str = "", vulnerable: bool | None = None):
     conn = get_db()
-    if vulnerable and tipo:
+    if vulnerable is not None and not vulnerable:
+        rows = conn.execute("SELECT * FROM servicios WHERE vulnerable=0 ORDER BY creado DESC").fetchall()
+        # vulnerable=false tratado como no-vulnerables (no ignorado)
+    elif vulnerable and tipo:
         rows = conn.execute("SELECT * FROM servicios WHERE vulnerable=1 AND tipo=? ORDER BY creado DESC", (tipo,)).fetchall()
     elif vulnerable:
         rows = conn.execute("SELECT * FROM servicios WHERE vulnerable=1 ORDER BY creado DESC").fetchall()
