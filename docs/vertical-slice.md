@@ -6,3 +6,5 @@ Límite honesto: frontend es esqueleto feo pero funcionando (pendiente H12-28 pu
 Tipo Servicio/Producto/Favor + filtros Todo/Servicios/Productos/Ayuda. Migración automática de columna tipo. Seed: 9 servicios (5 Servicio, 2 Producto, 2 Favor). Tests: 11 passed. Filtros en vivo verificados (Producto: Almuerzo, Silla; Favor: taladro, traslado).
 ## P3-P5 (2026-11-06 20:35 hora Perú, autorizado "Procede")
 Emergencia como tipo con sello y filtro (2 grupos seed), marcador ⚠ Vulnerabilidad, teléfono opcional + enlace WhatsApp (wa.me), accesibilidad (base 16px, botones ≥44px, Modo simple). Backend: columnas telefono/vulnerable con migración. Tests: 13 passed. Vivo: ?tipo=Emergencia → 2 grupos ✓; vulnerable=WARN ✓; WA aparece en grep del frontend ✓.
+## Partes 1-2 (2026-11-06 20:50 hora Perú)
+Zona del aval: tabla recomendaciones(barrio); POST recomendar acepta barrio (default Los Olivos) y devuelve vistos_zona; el badge ahora es zone-aware en backend. Solicita/Ofrece: columna accion + selector en formulario + etiqueta en tarjeta; traslado adulto mayor = Solicita. Tests: 14 passed. Vivo: Favor → Solicita/Ofrece ✓; recomendar misma zona → vistos_zona=1 ✓.

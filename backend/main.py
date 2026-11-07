@@ -26,7 +26,14 @@ CREATE TABLE IF NOT EXISTS servicios (
   creado REAL DEFAULT 0,
   tipo TEXT DEFAULT 'Servicio',
   telefono TEXT,
-  vulnerable INTEGER DEFAULT 0
+  vulnerable INTEGER DEFAULT 0,
+  accion TEXT DEFAULT 'Ofrece'
+);
+CREATE TABLE IF NOT EXISTS recomendaciones (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  servicio_id INTEGER NOT NULL,
+  barrio TEXT,
+  creado REAL DEFAULT 0
 );
 """)
     cols=[r[1] for r in conn.execute("PRAGMA table_info(servicios)").fetchall()]
@@ -34,6 +41,8 @@ CREATE TABLE IF NOT EXISTS servicios (
         conn.execute("ALTER TABLE servicios ADD COLUMN tipo TEXT DEFAULT 'Servicio'")
     if "telefono" not in cols:
         conn.execute("ALTER TABLE servicios ADD COLUMN telefono TEXT")
+    if "accion" not in cols:
+        conn.execute("ALTER TABLE servicios ADD COLUMN accion TEXT DEFAULT 'Ofrece'")
     if "vulnerable" not in cols:
         conn.execute("ALTER TABLE servicios ADD COLUMN vulnerable INTEGER DEFAULT 0")
     conn.commit()
@@ -77,6 +86,7 @@ class NuevoServicio(BaseModel):
     tipo: str = "Servicio"
     telefono: str = ""
     vulnerable: bool = False
+    accion: str = "Ofrece"
 
 @app.get("/health")
 def health():
@@ -107,23 +117,31 @@ def crear(s: NuevoServicio):
         raise HTTPException(status_code=422, detail="oficio y descripcion son obligatorios")
     conn = get_db()
     tipo = s.tipo if s.tipo in ("Servicio","Producto","Favor","Emergencia") else "Servicio"
-    cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo,telefono,vulnerable) VALUES (?,?,?,?,?,?,0,?,?,?,?)",
-        (s.oficio.strip(), s.descripcion.strip(), s.vecino.strip() or "Vecino", s.barrio.strip(), s.lat, s.lng, time.time(), tipo, s.telefono.strip() or None, 1 if s.vulnerable else 0))
+    accion = s.accion if s.accion in ("Ofrece","Solicita") else "Ofrece"
+    cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo,telefono,vulnerable,accion) VALUES (?,?,?,?,?,?,0,?,?,?,?,?)",
+        (s.oficio.strip(), s.descripcion.strip(), s.vecino.strip() or "Vecino", s.barrio.strip(), s.lat, s.lng, time.time(), tipo, s.telefono.strip() or None, 1 if s.vulnerable else 0, accion))
     conn.commit(); conn.close()
     return {"id": cur.lastrowid, "oficio": s.oficio}
 
+class RecomendarBody(BaseModel):
+    barrio: str = "Los Olivos"
+
 @app.post("/api/servicios/{sid}/recomendar")
-def recomendar(sid: int):
+def recomendar(sid: int, body: RecomendarBody = None):
     conn = get_db()
-    row = conn.execute("SELECT vistos FROM servicios WHERE id=?", (sid,)).fetchone()
+    row = conn.execute("SELECT vistos, barrio FROM servicios WHERE id=?", (sid,)).fetchone()
     if not row:
         conn.close()
         raise HTTPException(status_code=404, detail="servicio no encontrado")
+    barrio = (body.barrio.strip() if body and body.barrio else "Los Olivos")
+    # zona: el aval solo suma a "tu zona" si el recomendante es del mismo barrio del servicio
+    conn.execute("INSERT INTO recomendaciones (servicio_id, barrio, creado) VALUES (?,?,?)", (sid, barrio, time.time()))
     conn.execute("UPDATE servicios SET vistos = vistos + 1 WHERE id=?", (sid,))
     conn.commit()
     n = conn.execute("SELECT vistos FROM servicios WHERE id=?", (sid,)).fetchone()[0]
+    zona = conn.execute("SELECT COUNT(*) FROM recomendaciones WHERE servicio_id=? AND barrio=?", (sid, row["barrio"] or "Los Olivos")).fetchone()[0]
     conn.close()
-    return {"id": sid, "vistos": n}
+    return {"id": sid, "vistos": n, "vistos_zona": zona}
 
 frontend_dir = os.path.join(os.path.dirname(__file__), "..", "frontend")
 if os.path.exists(frontend_dir):
