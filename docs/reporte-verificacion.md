@@ -7,3 +7,5 @@
 - Mapa es opcional online (Leaflet CDN); sin internet el fallback es la lista ordenada — verificado por código (typeof L === 'undefined' → mensaje offline), no con DevTools offline.
 - Ficha de emergencia es estática/informativa por diseño (Won't firmado).
 - Captura 390px pendiente de revisión visual completa en el próximo paso (H28 estabilizar).
+## README final (2026-11-06 20:45 hora Perú)
+Reescrito con los 7 puntos del patrón ganador + demo arriba. Sin colores nuevos; palabras propias del reto. Contenido verificado: URL 200, 11 datos, 13 tests.
