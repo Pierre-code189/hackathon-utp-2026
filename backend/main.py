@@ -172,6 +172,15 @@ def crear(s: NuevoServicio):
 
 ADMIN_CODE = os.environ.get("ADMIN_CODE", "UTP-ADMIN-2026")
 
+@app.get("/api/noticias")
+def noticias():
+    # Fuentes publicas oficiales (no scraping de sitios privados). Sin internet, fallback estatico con enlaces oficiales.
+    return [
+        {"titulo": "INDECI — Alertas y emergencias", "fuente": "INDECI (oficial)", "url": "https://www.indeci.gob.pe/alertas/", "resumen": "Boletín oficial de emergencias y prevención ante El Niño."},
+        {"titulo": "SENAMHI — Pronóstico y avisos", "fuente": "SENAMHI (oficial)", "url": "https://www.senamhi.gob.pe/", "resumen": "Pronósticos meteorológicos y avisos de lluvias intensas."},
+        {"titulo": "Peligros asociados al fenómeno El Niño", "fuente": "INDECI (oficial)", "url": "https://www.indeci.gob.pe/", "resumen": "Guía oficial de preparación y respuesta ante lluvias."},
+    ]
+
 class ReporteBody(BaseModel):
     servicio_id: int
     motivo: str = ""

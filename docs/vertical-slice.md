@@ -22,3 +22,5 @@ Seccion "Recursos criticos (economia solidaria)": lista tipo=Emergencia (3 recur
 Tokens: confianza #1B8A5A (servicio/sello), solicita #5B8DEF, ofrece #8B5CF6, emergencia #D32F2F, aviso #F9A825. Tarjetas con borde izquierdo por tipo + badges b-Servicio/b-Producto/b-Favor/b-Emergencia y Solicita/Ofrece. Boton alerta btn-alerta rojo. Captura 390px revisada.
 ## Modulo 1 completado (2026-11-07 01:20 hora Peru)
 categoria/stock/precio/estado + reportes/moderacion con codigo admin. Frontend: tarjeta con categoria/stock/precio, detalle con mapa y Reportar/Volver.
+## Módulos 2-3 (2026-11-07 01:40 hora Perú)
+Mod2 Solidaria: details con Favor (ofrece/solicita) + distancia. Mod3 Emergencias: grupos tipo Emergencia + /api/noticias con 3 fuentes oficiales (INDECI/SENAMHI) (no scraping privado). 15 passed.

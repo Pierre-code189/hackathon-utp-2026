@@ -37,6 +37,8 @@
 <details id="tablero"><summary><b>Tablero de vulnerabilidad y coordinación</b></summary>
 <div id="tablero_cuerpo"></div>
 </details>
+<details id="solidaria"><summary><b>Módulo Economía Solidaria (Favor)</b></summary><div id="solidaria_cuerpo"></div></details>
+<details id="emerg"><summary><b>Módulo Emergencias (grupo + noticias)</b></summary><div id="emerg_cuerpo"></div></details>
 <div class="emerg">
 <p><button type="button" id="b_alerta" style="background:#c0392b;color:#fff;min-height:48px" onclick="emitirAlerta()">⚠ Emitir alerta con mi ubicación</button></p>
 <h2>En emergencia (ficha demoable)</h2>
@@ -99,6 +101,21 @@ async function reportar(id){
   const r = await fetch('/api/reportes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({servicio_id:id,motivo})});
   alert(r.ok?'Reporte enviado. Un moderador lo revisará.':'No se pudo reportar.');
 }
+document.getElementById('solidaria').addEventListener('toggle', async e=>{
+  if(!e.target.open) return;
+  const favores = await fetch('/api/servicios?tipo=Favor').then(r=>r.json()).catch(()=>[]);
+  document.getElementById('solidaria_cuerpo').innerHTML = favores.length?favores.map(s=>`<p>🙌 ${esc(s.oficio)} — ${esc(s.vecino)} (${esc(s.accion||'Ofrece')}) · ${esc(s.barrio||'')} · a ${s.distancia_km||'—'} km</p>`).join('')+(favores.some(s=>s.accion!=='Solicita')?'':''):'<p>Sin favores.</p>';
+});
+document.getElementById('emerg').addEventListener('toggle', async e=>{
+  if(!e.target.open) return;
+  const [grupos, noticias] = await Promise.all([
+    fetch('/api/servicios?tipo=Emergencia').then(r=>r.json()).catch(()=>[]),
+    fetch('/api/noticias').then(r=>r.json()).catch(()=>[])
+  ]);
+  document.getElementById('emerg_cuerpo').innerHTML =
+    '<h3>Grupos y servicios de apoyo</h3>' + (grupos.length?grupos.map(g=>`<p>🆘 ${esc(g.oficio)} — ${esc(g.vecino)}</p>`).join(''):'<p>Sin grupos.</p>') +
+    '<h3>Noticias oficiales (fuentes públicas)</h3>' + (noticias.length?noticias.map(n=>`<p>📰 <a href="${esc(n.url)}" target="_blank">${esc(n.titulo)}</a> — ${esc(n.fuente)}<br><small>${esc(n.resumen)}</small></p>`).join(''):'<p>Sin noticias.</p>');
+});
 function modoSimple(){document.body.classList.toggle('simple');document.getElementById('b_simple').textContent=document.body.classList.contains('simple')?'Modo simple: activado':'Modo simple (letra grande)';}
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
