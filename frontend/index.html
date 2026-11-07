@@ -1,10 +1,13 @@
 <!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Vecino Recomienda</title>
-<style>body{font-family:system-ui,sans-serif;max-width:720px;margin:24px auto;padding:0 16px} h1{font-size:26px} .badge{background:#111;color:#fff;padding:4px 10px;border-radius:999px;font-size:13px} button{padding:10px 16px;cursor:pointer} input,textarea{width:100%;padding:10px;margin:4px 0 10px;box-sizing:border-box} .card{border:1px solid #ddd;border-radius:10px;padding:14px;margin:10px 0} .sello{background:#e6f4ea;padding:2px 8px;border-radius:999px;font-size:13px}</style>
+<style>body{font-family:system-ui,sans-serif;max-width:760px;margin:24px auto;padding:0 16px} h1{font-size:26px} .badge{background:#111;color:#fff;padding:4px 10px;border-radius:999px;font-size:13px} button{padding:10px 16px;cursor:pointer} input{width:100%;padding:10px;margin:4px 0 10px;box-sizing:border-box} .card{border:1px solid #ddd;border-radius:10px;padding:14px;margin:10px 0} .sello{background:#e6f4ea;padding:2px 8px;border-radius:999px;font-size:13px} .emerg{background:#fff7e6;border:1px solid #f0c040;border-radius:10px;padding:14px;margin:12px 0} #mapa{height:280px;border-radius:10px;border:1px solid #ddd;margin:10px 0;display:none} .notas{font-size:13px;color:#555}</style>
 </head><body>
 <span class="badge">VECINO RECOMIENDA · HACKATHON UTP 2026</span>
 <h1>Vecino Recomienda</h1>
 <p>Lo que necesitas a 3 cuadras, con el visto bueno de quien ya lo probó. Publicas en <b>3 clics</b>, sin registro pesado.</p>
+<details><summary><b>Tutorial rápido (1 min)</b></summary>
+<ol><li>Escribe qué ofreces y tu nombre (clic 1-2).</li><li>Publica con tu ubicación automática (clic 3).</li><li>Busca cerca de ti, mira el sello ✓ y pulsa <i>Recomendar</i> si ya lo probaste.</li></ol>
+</details>
 <h2>Publicar un servicio (3 clics)</h2>
 <form id="f" onsubmit="return publicar(event)">
 <label>1. ¿Qué ofreces? <input id="oficio" placeholder="Ej: Cerrajería 24h" required></label>
@@ -15,17 +18,27 @@
 </form>
 <h2>Cerca de ti (ordenado por distancia)</h2>
 <ul id="lista" style="list-style:none;padding:0"></ul>
+<div id="mapa"></div>
+<p class="notas" id="notamapa">El mapa se activa solo con internet; sin conexión sigues viendo la lista ordenada. <button type="button" onclick="activarMapa()">Ver mapa (opcional)</button></p>
+<div class="emerg">
+<h2>En emergencia (ficha demoable)</h2>
+<p>Si la situación es crítica, estos grupos de apoyo del barrio están identificados. Esta ficha es informativa; la coordinación completa es trabajo futuro.</p>
+<ul><li><b>Comité barrial de emergencia</b> — Los Olivos · coordina albergue temporal</li><li><b>Vecinos primeros auxilios</b> — Los Olivos · botiquín y traslado</li><li><b>Red de agua y alimentos</b> — Los Olivos · distribución solidaria</li></ul>
+</div>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-let LAT=-11.981, LNG=-77.072;
+let LAT=-11.981, LNG=-77.072, SERVICIOS=[];
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
   const r=await fetch(`/api/servicios?lat=${LAT}&lng=${LNG}`);
-  const data=await r.json();
-  document.getElementById('lista').innerHTML=data.map(s=>`
+  SERVICIOS=await r.json();
+  document.getElementById('lista').innerHTML=SERVICIOS.map(s=>`
     <li class="card"><b>${s.oficio}</b> — ${s.descripcion}<br>
     <small>${s.vecino}${s.barrio?' · '+s.barrio:''} · a ${s.distancia_km} km</small><br>
     ${s.visto_bueno?`<span class="sello">✓ Visto bueno vecinal (${s.vistos})</span>`:`<span>Sin visto bueno aún</span>`}
     <button style="margin-left:8px" onclick="recomendar(${s.id})">Recomendar</button></li>`).join('');
+  if(document.getElementById('mapa').style.display==='block') pintarMapa();
 }
 async function publicar(e){
   e.preventDefault();
@@ -36,9 +49,22 @@ async function publicar(e){
   if(r.ok){e.target.reset();cargar();}
   return false;
 }
-async function recomendar(id){
-  await fetch(`/api/servicios/${id}/recomendar`,{method:'POST'});
-  cargar();
+async function recomendar(id){await fetch(`/api/servicios/${id}/recomendar`,{method:'POST'});cargar();}
+function activarMapa(){
+  const m=document.getElementById('mapa');
+  if(typeof L==='undefined'){document.getElementById('notamapa').textContent='Mapa no disponible sin internet: la lista ordenada es tu vista principal (offline).';return;}
+  m.style.display='block'; pintarMapa();
+}
+let mapaInst=null;
+function pintarMapa(){
+  if(typeof L==='undefined'||!SERVICIOS.length)return;
+  try{
+    if(mapaInst){mapaInst.remove();mapaInst=null;}
+    mapaInst=L.map('mapa').setView([LAT,LNG],13);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(mapaInst);
+    L.marker([LAT,LNG]).addTo(mapaInst).bindPopup('Tú');
+    SERVICIOS.forEach(s=>{if(s.lat&&s.lng)L.marker([s.lat,s.lng]).addTo(mapaInst).bindPopup(`<b>${s.oficio}</b><br>${s.descripcion}<br>✓ Visto bueno (${s.vistos})`);});
+  }catch(e){/* fallback silencioso a la lista */}
 }
 cargar();
 </script></body></html>
