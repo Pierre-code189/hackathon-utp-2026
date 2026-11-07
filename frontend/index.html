@@ -34,6 +34,9 @@
 <ul id="lista" style="list-style:none;padding:0"></ul>
 <div id="mapa"></div>
 <p class="notas" id="notamapa">El mapa se activa solo con internet; sin conexión sigues viendo la lista ordenada. <button type="button" onclick="activarMapa()">Ver mapa (opcional)</button></p>
+<details id="tablero"><summary><b>Tablero de vulnerabilidad y coordinación</b></summary>
+<div id="tablero_cuerpo"></div>
+</details>
 <div class="emerg">
 <h2>En emergencia (ficha demoable)</h2>
 <p>Si la situación es crítica, estos grupos de apoyo del barrio están identificados. Esta ficha es informativa; la coordinación completa es trabajo futuro.</p>
@@ -44,6 +47,26 @@
 <script>
 let LAT=-11.981, LNG=-77.072, SERVICIOS=[], FILTRO='';
 function filtrar(f){FILTRO=f;cargar();}
+async function cargarTablero(){
+  const [v, asig, nec, rec] = await Promise.all([
+    fetch('/api/servicios?vulnerable=1').then(r=>r.json()),
+    fetch('/api/asignaciones').then(r=>r.json()),
+    fetch('/api/servicios?tipo=Favor').then(r=>r.json()),
+    fetch('/api/servicios?tipo=Favor').then(r=>r.json())
+  ]).catch(()=>[[],[],[],[]]);
+  const recursos = nec.filter(s=>s.accion!=='Solicita');
+  document.getElementById('tablero_cuerpo').innerHTML =
+    '<h3>Vulnerabilidades</h3>' + (v.length?v.map(s=>`<p>⚠ ${s.oficio} — ${s.vecino} (${s.barrio||''})</p>`).join(''):'<p>Sin registros.</p>') +
+    '<h3>Coordinar recurso → necesidad</h3>' + (nec.length?nec.map(n=>`<p>${n.accion==='Solicita'?'🙋':'🙌'} ${n.oficio} — ${n.vecino} <button type="button" onclick="asignar(${n.id})">Asignar recurso</button></p>`).join(''):'<p>Sin favores.</p>') +
+    '<h3>Asignaciones</h3>' + (asig.length?asig.map(a=>`<p>✓ ${a.recurso} → ${a.necesidad}</p>`).join(''):'<p>Sin asignaciones aún.</p>');
+}
+async function asignar(necesidad_id){
+  const rec = SERVICIOS.find(s=>s.tipo==='Favor' && s.accion!=='Solicita');
+  const recurso_id = rec ? rec.id : 8;
+  const r = await fetch('/api/asignaciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({necesidad_id,recurso_id})});
+  if(r.ok) cargarTablero(); else alert('No se pudo asignar.');
+}
+document.getElementById('tablero').addEventListener('toggle', e=>{ if(e.target.open) cargarTablero(); });
 function modoSimple(){document.body.classList.toggle('simple');document.getElementById('b_simple').textContent=document.body.classList.contains('simple')?'Modo simple: activado':'Modo simple (letra grande)';}
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){

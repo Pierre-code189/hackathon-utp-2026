@@ -35,6 +35,12 @@ CREATE TABLE IF NOT EXISTS recomendaciones (
   barrio TEXT,
   creado REAL DEFAULT 0
 );
+CREATE TABLE IF NOT EXISTS asignaciones (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  necesidad_id INTEGER NOT NULL,
+  recurso_id INTEGER NOT NULL,
+  creado REAL DEFAULT 0
+);
 """)
     cols=[r[1] for r in conn.execute("PRAGMA table_info(servicios)").fetchall()]
     if "tipo" not in cols:
@@ -97,9 +103,11 @@ def hello():
     return {"message": "Vecino Recomienda — esqueleto listo.", "status": "skeleton"}
 
 @app.get("/api/servicios")
-def listar(lat: float = -11.981, lng: float = -77.072, tipo: str = ""):
+def listar(lat: float = -11.981, lng: float = -77.072, tipo: str = "", vulnerable: bool = False):
     conn = get_db()
-    if tipo:
+    if vulnerable:
+        rows = conn.execute("SELECT * FROM servicios WHERE vulnerable=1 ORDER BY creado DESC").fetchall()
+    elif tipo:
         rows = conn.execute("SELECT * FROM servicios WHERE tipo=? ORDER BY creado DESC", (tipo,)).fetchall()
     else:
         rows = conn.execute("SELECT * FROM servicios ORDER BY creado DESC").fetchall()
@@ -122,6 +130,29 @@ def crear(s: NuevoServicio):
         (s.oficio.strip(), s.descripcion.strip(), s.vecino.strip() or "Vecino", s.barrio.strip(), s.lat, s.lng, time.time(), tipo, s.telefono.strip() or None, 1 if s.vulnerable else 0, accion))
     conn.commit(); conn.close()
     return {"id": cur.lastrowid, "oficio": s.oficio}
+
+class AsignacionBody(BaseModel):
+    necesidad_id: int
+    recurso_id: int
+
+@app.post("/api/asignaciones")
+def crear_asignacion(a: AsignacionBody):
+    conn = get_db()
+    nec = conn.execute("SELECT id FROM servicios WHERE id=?", (a.necesidad_id,)).fetchone()
+    rec = conn.execute("SELECT id FROM servicios WHERE id=?", (a.recurso_id,)).fetchone()
+    if not nec or not rec:
+        conn.close()
+        raise HTTPException(status_code=404, detail="necesidad o recurso no encontrado")
+    cur = conn.execute("INSERT INTO asignaciones (necesidad_id, recurso_id, creado) VALUES (?,?,?)", (a.necesidad_id, a.recurso_id, time.time()))
+    conn.commit(); conn.close()
+    return {"id": cur.lastrowid, "necesidad_id": a.necesidad_id, "recurso_id": a.recurso_id}
+
+@app.get("/api/asignaciones")
+def listar_asignaciones():
+    conn = get_db()
+    rows = conn.execute("SELECT a.id, a.necesidad_id, a.recurso_id, a.creado, n.oficio AS necesidad, r.oficio AS recurso FROM asignaciones a JOIN servicios n ON n.id=a.necesidad_id JOIN servicios r ON r.id=a.recurso_id ORDER BY a.id DESC").fetchall()
+    conn.close()
+    return [dict(r) for r in rows]
 
 class RecomendarBody(BaseModel):
     barrio: str = "Los Olivos"
