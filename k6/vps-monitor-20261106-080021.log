@@ -1,0 +1,480 @@
+08:00:21
+ 08:00:21 up 2 days, 13:09,  2 users,  load average: 0.13, 0.69, 0.90
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1647       15919           4        6869       22384
+0.13 0.69 0.90 1/308 253915
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:31 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:24
+ 08:00:24 up 2 days, 13:09,  2 users,  load average: 0.12, 0.68, 0.89
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1728       15838           4        6869       22303
+0.12 0.68 0.89 4/321 253937
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:33 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:26
+ 08:00:26 up 2 days, 13:09,  2 users,  load average: 0.12, 0.68, 0.89
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1742       15823           4        6869       22289
+0.12 0.68 0.89 5/328 253951
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:35 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:28
+ 08:00:28 up 2 days, 13:09,  2 users,  load average: 0.27, 0.70, 0.90
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1747       15818           4        6870       22284
+0.27 0.70 0.90 3/331 253961
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:38 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:30
+ 08:00:30 up 2 days, 13:09,  2 users,  load average: 0.27, 0.70, 0.90
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1746       15818           4        6870       22285
+0.27 0.70 0.90 5/330 253969
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:40 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:32
+ 08:00:32 up 2 days, 13:09,  2 users,  load average: 0.27, 0.70, 0.90
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1740       15823           4        6871       22290
+0.27 0.70 0.90 3/334 253982
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:42 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:34
+ 08:00:34 up 2 days, 13:09,  2 users,  load average: 0.49, 0.74, 0.91
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1738       15825           4        6872       22293
+0.49 0.74 0.91 4/334 253991
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:44 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:36
+ 08:00:36 up 2 days, 13:09,  2 users,  load average: 0.49, 0.74, 0.91
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1742       15820           4        6872       22289
+0.49 0.74 0.91 4/335 253999
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:46 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:38
+ 08:00:38 up 2 days, 13:09,  2 users,  load average: 0.77, 0.79, 0.93
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1754       15808           4        6872       22277
+0.77 0.79 0.93 4/335 254021
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.7  0.2    07:15:48 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:40
+ 08:00:40 up 2 days, 13:09,  2 users,  load average: 0.77, 0.79, 0.93
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1753       15808           4        6873       22278
+0.77 0.79 0.93 5/335 254029
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:15:50 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:42
+ 08:00:42 up 2 days, 13:09,  2 users,  load average: 0.77, 0.79, 0.93
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1753       15808           4        6873       22277
+0.77 0.79 0.93 3/337 254038
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:15:52 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:44
+ 08:00:44 up 2 days, 13:09,  2 users,  load average: 0.87, 0.81, 0.93
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1755       15806           4        6874       22276
+0.87 0.81 0.93 2/338 254046
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:15:54 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:46
+ 08:00:46 up 2 days, 13:09,  2 users,  load average: 0.87, 0.81, 0.93
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1756       15804           4        6874       22275
+0.87 0.81 0.93 3/339 254054
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:15:56 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:48
+ 08:00:48 up 2 days, 13:09,  2 users,  load average: 1.12, 0.87, 0.95
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1755       15804           4        6875       22276
+1.12 0.87 0.95 6/339 254061
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:15:58 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:50
+ 08:00:50 up 2 days, 13:09,  2 users,  load average: 1.12, 0.87, 0.95
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1757       15801           4        6876       22274
+1.12 0.87 0.95 4/339 254068
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:16:00 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:52
+ 08:00:52 up 2 days, 13:09,  2 users,  load average: 1.51, 0.95, 0.98
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1773       15785           4        6876       22258
+1.51 0.95 0.98 2/342 254078
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:16:02 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:54
+ 08:00:54 up 2 days, 13:09,  2 users,  load average: 1.51, 0.95, 0.98
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1760       15798           4        6877       22271
+1.51 0.95 0.98 6/341 254089
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:16:04 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:56
+ 08:00:56 up 2 days, 13:09,  2 users,  load average: 1.51, 0.95, 0.98
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1760       15797           4        6877       22271
+1.51 0.95 0.98 2/341 254096
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:16:06 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:00:58
+ 08:00:58 up 2 days, 13:09,  2 users,  load average: 1.87, 1.04, 1.00
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1744       15813           4        6878       22287
+1.87 1.04 1.00 5/341 254105
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:16:08 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:00
+ 08:01:00 up 2 days, 13:09,  2 users,  load average: 1.87, 1.04, 1.00
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1742       15814           4        6878       22288
+1.87 1.04 1.00 6/338 254112
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:16:10 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:02
+ 08:01:02 up 2 days, 13:09,  2 users,  load average: 1.96, 1.07, 1.01
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1745       15811           4        6879       22286
+1.96 1.07 1.01 10/338 254119
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:16:12 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:05
+ 08:01:05 up 2 days, 13:09,  2 users,  load average: 1.96, 1.07, 1.01
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1747       15808           4        6879       22283
+1.96 1.07 1.01 10/336 254126
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.8  0.2    07:16:14 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:07
+ 08:01:07 up 2 days, 13:09,  2 users,  load average: 1.96, 1.07, 1.01
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1752       15803           4        6880       22279
+1.96 1.07 1.01 2/337 254135
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:16 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:09
+ 08:01:09 up 2 days, 13:09,  2 users,  load average: 2.04, 1.10, 1.02
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1748       15806           4        6880       22283
+2.04 1.10 1.02 3/337 254159
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:19 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:11
+ 08:01:11 up 2 days, 13:09,  2 users,  load average: 2.04, 1.10, 1.02
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1751       15803           4        6880       22280
+2.04 1.10 1.02 4/337 254166
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:21 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:13
+ 08:01:13 up 2 days, 13:09,  2 users,  load average: 2.20, 1.15, 1.04
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1752       15802           4        6881       22279
+2.20 1.15 1.04 3/337 254174
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:23 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:15
+ 08:01:15 up 2 days, 13:10,  2 users,  load average: 2.20, 1.15, 1.04
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1753       15800           4        6881       22278
+2.20 1.15 1.04 3/339 254183
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:25 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:17
+ 08:01:17 up 2 days, 13:10,  2 users,  load average: 2.20, 1.15, 1.04
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1754       15799           4        6882       22277
+2.20 1.15 1.04 6/339 254190
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:27 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:19
+ 08:01:19 up 2 days, 13:10,  2 users,  load average: 2.35, 1.20, 1.06
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1757       15795           4        6882       22274
+2.35 1.20 1.06 3/339 254197
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:29 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:21
+ 08:01:21 up 2 days, 13:10,  2 users,  load average: 2.35, 1.20, 1.06
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1757       15795           4        6883       22274
+2.35 1.20 1.06 3/339 254204
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:31 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:23
+ 08:01:23 up 2 days, 13:10,  2 users,  load average: 2.48, 1.24, 1.07
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1759       15792           4        6883       22272
+2.48 1.24 1.07 3/339 254211
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:33 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:25
+ 08:01:25 up 2 days, 13:10,  2 users,  load average: 2.48, 1.24, 1.07
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1762       15790           4        6883       22269
+2.48 1.24 1.07 2/338 254219
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:35 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:27
+ 08:01:27 up 2 days, 13:10,  2 users,  load average: 2.48, 1.24, 1.07
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1763       15788           4        6884       22268
+2.48 1.24 1.07 2/338 254226
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:37 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:29
+ 08:01:29 up 2 days, 13:10,  2 users,  load average: 3.16, 1.40, 1.13
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1765       15785           4        6884       22266
+3.16 1.40 1.13 3/334 254233
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:39 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:31
+ 08:01:31 up 2 days, 13:10,  2 users,  load average: 3.16, 1.40, 1.13
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1766       15783           4        6885       22265
+3.16 1.40 1.13 1/335 254241
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  0.9  0.2    07:16:41 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:33
+ 08:01:33 up 2 days, 13:10,  2 users,  load average: 3.23, 1.45, 1.14
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1779       15770           4        6886       22252
+3.23 1.45 1.14 4/335 254248
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:43 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:35
+ 08:01:35 up 2 days, 13:10,  2 users,  load average: 3.23, 1.45, 1.14
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1779       15768           4        6888       22252
+3.23 1.45 1.14 4/335 254255
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:45 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:37
+ 08:01:37 up 2 days, 13:10,  2 users,  load average: 3.29, 1.49, 1.16
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1780       15766           4        6888       22251
+3.29 1.49 1.16 8/335 254262
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:47 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:39
+ 08:01:39 up 2 days, 13:10,  2 users,  load average: 3.29, 1.49, 1.16
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1785       15761           4        6889       22246
+3.29 1.49 1.16 2/336 254288
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:49 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:41
+ 08:01:41 up 2 days, 13:10,  2 users,  load average: 3.29, 1.49, 1.16
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1782       15762           4        6890       22249
+3.29 1.49 1.16 3/332 254295
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:51 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:43
+ 08:01:43 up 2 days, 13:10,  2 users,  load average: 3.43, 1.55, 1.18
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1783       15760           4        6891       22248
+3.43 1.55 1.18 6/332 254302
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:53 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:45
+ 08:01:45 up 2 days, 13:10,  2 users,  load average: 3.43, 1.55, 1.18
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1787       15755           4        6892       22244
+3.43 1.55 1.18 2/333 254310
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:55 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:47
+ 08:01:47 up 2 days, 13:10,  2 users,  load average: 3.55, 1.61, 1.20
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1788       15754           4        6893       22242
+3.55 1.61 1.20 3/333 254317
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:57 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:50
+ 08:01:50 up 2 days, 13:10,  2 users,  load average: 3.55, 1.61, 1.20
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1796       15745           4        6894       22234
+3.55 1.61 1.20 3/333 254324
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:16:59 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:52
+ 08:01:52 up 2 days, 13:10,  2 users,  load average: 3.55, 1.61, 1.20
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1798       15743           4        6894       22233
+3.55 1.61 1.20 4/333 254331
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:17:02 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:54
+ 08:01:54 up 2 days, 13:10,  2 users,  load average: 3.59, 1.65, 1.21
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1800       15739           4        6895       22231
+3.59 1.65 1.21 6/333 254339
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:17:04 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:56
+ 08:01:56 up 2 days, 13:10,  2 users,  load average: 3.59, 1.65, 1.21
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1801       15737           4        6896       22229
+3.59 1.65 1.21 3/328 254346
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.0  0.2    07:17:06 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:01:58
+ 08:01:58 up 2 days, 13:10,  2 users,  load average: 3.62, 1.69, 1.23
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1806       15732           4        6897       22225
+3.62 1.69 1.23 3/329 254354
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:08 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:00
+ 08:02:00 up 2 days, 13:10,  2 users,  load average: 3.62, 1.69, 1.23
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1807       15731           4        6897       22224
+3.62 1.69 1.23 3/331 254363
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:10 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:02
+ 08:02:02 up 2 days, 13:10,  2 users,  load average: 3.62, 1.69, 1.23
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1808       15729           4        6897       22223
+3.62 1.69 1.23 7/334 254373
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:12 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:04
+ 08:02:04 up 2 days, 13:10,  2 users,  load average: 4.05, 1.81, 1.27
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1809       15727           4        6898       22221
+4.05 1.81 1.27 3/335 254381
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:14 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:06
+ 08:02:06 up 2 days, 13:10,  2 users,  load average: 4.05, 1.81, 1.27
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1810       15726           4        6898       22221
+4.05 1.81 1.27 3/336 254389
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:16 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:08
+ 08:02:08 up 2 days, 13:10,  2 users,  load average: 3.81, 1.79, 1.27
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1817       15718           4        6899       22213
+3.81 1.79 1.27 3/336 254396
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:18 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:10
+ 08:02:10 up 2 days, 13:10,  2 users,  load average: 3.81, 1.79, 1.27
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1824       15711           4        6900       22207
+3.81 1.79 1.27 3/336 254420
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:20 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:12
+ 08:02:12 up 2 days, 13:10,  2 users,  load average: 3.81, 1.79, 1.27
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1823       15711           4        6900       22207
+3.81 1.79 1.27 4/335 254427
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:22 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:14
+ 08:02:14 up 2 days, 13:11,  2 users,  load average: 3.66, 1.80, 1.27
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1824       15710           4        6901       22207
+3.66 1.80 1.27 4/335 254434
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:24 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:16
+ 08:02:16 up 2 days, 13:11,  2 users,  load average: 3.66, 1.80, 1.27
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1824       15709           4        6902       22207
+3.66 1.80 1.27 2/332 254441
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:26 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:18
+ 08:02:18 up 2 days, 13:11,  2 users,  load average: 3.69, 1.83, 1.29
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1822       15710           4        6902       22209
+3.69 1.83 1.29 5/333 254449
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:28 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:20
+ 08:02:20 up 2 days, 13:11,  2 users,  load average: 3.69, 1.83, 1.29
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1823       15708           4        6903       22208
+3.69 1.83 1.29 4/333 254456
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:30 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
+08:02:22
+ 08:02:22 up 2 days, 13:11,  2 users,  load average: 3.48, 1.82, 1.29
+               total        used        free      shared  buff/cache   available
+Mem:           24031        1823       15708           4        6904       22208
+3.48 1.82 1.29 4/333 254463
+    PID %CPU %MEM     ELAPSED CMD
+ 215433  1.1  0.2    07:17:32 /root/hackathon-utp-2026/.venv/bin/python3.14 /root/hackathon-utp-2026/.venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 8003
+---
