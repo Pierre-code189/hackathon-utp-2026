@@ -78,6 +78,27 @@ async function emitirAlerta(){
   if(r.ok){cargarTablero(); alert('Alerta emitida con tu ubicación. Aparece en el tablero.'); cargar();}
   else {alert('No se pudo emitir la alerta.');}
 }
+function verDetalle(id){
+  const s = SERVICIOS.find(x=>x.id===id);
+  if(!s) return;
+  const m = document.getElementById('detalle');
+  m.innerHTML = `<button onclick="document.getElementById('detalle').style.display='none'">← Volver</button>
+  <h3>${esc(s.oficio)} (${esc(s.tipo||'Servicio')})</h3>
+  <p>Categoría: ${esc(s.categoria||'General')} · Precio: ${s.precio!=null?'S/ '+Number(s.precio).toFixed(2):'A tratar'} · Stock: ${s.stock!=null?s.stock:'—'}</p>
+  <p>Vendedor: ${esc(s.vecino)} · ${esc(s.barrio||'')} · a ${s.distancia_km} km</p>
+  <p>${esc(s.descripcion)}</p>
+  <p>✓ Visto bueno vecinal (${s.vistos})</p>
+  ${s.telefono?`<a href="https://wa.me/${String(s.telefono).replace(/\D/g,'')}" target="_blank">WhatsApp</a> `:''}
+  <button onclick="reportar(${s.id})">Reportar</button>
+  <div id="mapa_detalle" style="height:200px;border:1px solid #ddd;margin-top:8px"></div>`;
+  m.style.display='block';
+  if(window.L){ try{ const mp=L.map('mapa_detalle').setView([s.lat||-11.981,s.lng||-77.072],15); L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{attribution:'© OpenStreetMap'}).addTo(mp); L.marker([s.lat||-11.981,s.lng||-77.072]).addTo(mp).bindPopup(esc(s.oficio)); }catch(e){} }
+}
+async function reportar(id){
+  const motivo = prompt('Motivo del reporte:')||'';
+  const r = await fetch('/api/reportes',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({servicio_id:id,motivo})});
+  alert(r.ok?'Reporte enviado. Un moderador lo revisará.':'No se pudo reportar.');
+}
 function modoSimple(){document.body.classList.toggle('simple');document.getElementById('b_simple').textContent=document.body.classList.contains('simple')?'Modo simple: activado':'Modo simple (letra grande)';}
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
@@ -97,8 +118,8 @@ async function cargar(){
 function pintar(){
   if(!SERVICIOS.length){document.getElementById('lista').innerHTML='<li class="card">Aún no hay vecinos publicados. Sé el primero.</li>';return;}
   document.getElementById('lista').innerHTML=SERVICIOS.map(s=>`
-    <li class="card card-tipo t-${s.tipo||'Servicio'}"><b>${esc(s.oficio)}</b> — ${esc(s.descripcion)}<br>
-    <small>${esc(s.vecino)}${s.barrio?' · '+esc(s.barrio):''} · a ${s.distancia_km} km · <span class="badge-tipo b-${s.tipo||'Servicio'}">${esc(s.tipo||'Servicio')}</span> · <span class="badge-tipo b-${s.accion==='Solicita'?'Solicita':'Ofrece'}">${s.accion==='Solicita'?'Se necesita':'Ofrece'}</span> · ${s.tipo==='Emergencia'?'Modo: Emergencia':'Modo: Día a día'}</small><br>
+    <li class="card card-tipo t-${s.tipo||'Servicio'}"><b>${esc(s.oficio)}</b> — ${esc(s.descripcion.slice(0,60))}${s.descripcion.length>60?"…":""}<br>
+    <b style="cursor:pointer;text-decoration:underline" onclick="verDetalle(${s.id})">${esc(s.oficio)}</b> <small>${esc(s.categoria||'General')} · ${esc(s.vecino)}${s.barrio?' · '+esc(s.barrio):''} · a ${s.distancia_km} km · <span class="badge-tipo b-${s.tipo||'Servicio'}">${esc(s.tipo||'Servicio')}</span> · <span class="badge-tipo b-${s.accion==='Solicita'?'Solicita':'Ofrece'}">${s.accion==='Solicita'?'Se necesita':'Ofrece'}</span> · ${s.tipo==='Emergencia'?'Modo: Emergencia':'Modo: Día a día'}${s.stock!=null?` · Stock ${s.stock}`:''}${s.precio!=null?` · S/ ${Number(s.precio).toFixed(2)}`:''}</small><br>
     ${s.vulnerable?'<span class="sello" style="background:#ffe0e0">⚠ Vulnerabilidad</span> ':''}${s.telefono?`<a class="sello" style="background:#d7e9ff" href="https://wa.me/${s.telefono}" target="_blank">WhatsApp</a> `:''}${s.visto_bueno?`<span class="sello">✓ Visto bueno vecinal (${s.vistos})</span>`:`<span>Sin visto bueno aún</span>`}
     <button style="margin-left:8px" onclick="recomendar(${s.id})">Recomendar</button></li>`).join('');
   if(document.getElementById('mapa').style.display==='block') pintarMapa();
@@ -132,4 +153,4 @@ function pintarMapa(){
 cargar();
 fetch('/api/servicios?tipo=Emergencia').then(r=>r.json()).then(d=>{document.getElementById('ficha_emerg').innerHTML=d.map(g=>`<li><b>${esc(g.oficio)}</b> — ${esc(g.vecino)}${g.telefono?' · '+esc(g.telefono):''}</li>`).join('')||'<li>Sin grupos aún.</li>';}).catch(()=>{document.getElementById('ficha_emerg').innerHTML='<li>Sin conexión.</li>';});
 fetch('/api/servicios?tipo=Emergencia').then(r=>r.json()).then(async d=>{const a=await fetch('/api/asignaciones').then(r=>r.json()).catch(()=>[]); const ocupados=new Set(a.map(x=>x.recurso_id)); document.getElementById('recursos_criticos').innerHTML=d.length?d.map(g=>`<li><b>${esc(g.oficio)}</b> — ${esc(g.descripcion)} · ${ocupados.has(g.id)?'Ocupado':'Disponible'}</li>`).join(''):'<li>Sin recursos aún.</li>';}).catch(()=>{document.getElementById('recursos_criticos').innerHTML='<li>Sin conexión.</li>';});
-</script></body></html>
+</script><div id="detalle" style="display:none;border:1px solid #ddd;border-radius:12px;padding:16px;margin:12px 0;background:#fff"></div></body></html>

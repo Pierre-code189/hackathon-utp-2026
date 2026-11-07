@@ -20,3 +20,5 @@ Boton "Emitir alerta con mi ubicacion": POST /api/servicios con tipo=Emergencia,
 Seccion "Recursos criticos (economia solidaria)": lista tipo=Emergencia (3 recursos: atencion medica, primeros auxilios, red de agua/alimentos) con estado Disponible/Ocupado derivado de GET /api/asignaciones (sin backend nuevo). Verificado en vivo: 3 recursos listados, asignaciones=0 => todo Disponible. Residuo de pruebas limpiado.
 ## Diseño color (2026-11-06 22:50 hora Perú)
 Tokens: confianza #1B8A5A (servicio/sello), solicita #5B8DEF, ofrece #8B5CF6, emergencia #D32F2F, aviso #F9A825. Tarjetas con borde izquierdo por tipo + badges b-Servicio/b-Producto/b-Favor/b-Emergencia y Solicita/Ofrece. Boton alerta btn-alerta rojo. Captura 390px revisada.
+## Modulo 1 completado (2026-11-07 01:20 hora Peru)
+categoria/stock/precio/estado + reportes/moderacion con codigo admin. Frontend: tarjeta con categoria/stock/precio, detalle con mapa y Reportar/Volver.

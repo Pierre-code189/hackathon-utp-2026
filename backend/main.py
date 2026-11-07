@@ -27,13 +27,24 @@ CREATE TABLE IF NOT EXISTS servicios (
   tipo TEXT DEFAULT 'Servicio',
   telefono TEXT,
   vulnerable INTEGER DEFAULT 0,
-  accion TEXT DEFAULT 'Ofrece'
+  accion TEXT DEFAULT 'Ofrece',
+  categoria TEXT,
+  stock INTEGER,
+  precio REAL,
+  estado TEXT DEFAULT 'publicado'
 );
 CREATE TABLE IF NOT EXISTS recomendaciones (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   servicio_id INTEGER NOT NULL,
   barrio TEXT,
   creado REAL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS reportes (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  servicio_id INTEGER NOT NULL,
+  motivo TEXT,
+  creado REAL DEFAULT 0,
+  estado TEXT DEFAULT 'pendiente'
 );
 CREATE TABLE IF NOT EXISTS asignaciones (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -51,6 +62,14 @@ CREATE TABLE IF NOT EXISTS asignaciones (
         conn.execute("ALTER TABLE servicios ADD COLUMN accion TEXT DEFAULT 'Ofrece'")
     if "vulnerable" not in cols:
         conn.execute("ALTER TABLE servicios ADD COLUMN vulnerable INTEGER DEFAULT 0")
+    if "categoria" not in cols:
+        conn.execute("ALTER TABLE servicios ADD COLUMN categoria TEXT")
+    if "stock" not in cols:
+        conn.execute("ALTER TABLE servicios ADD COLUMN stock INTEGER")
+    if "precio" not in cols:
+        conn.execute("ALTER TABLE servicios ADD COLUMN precio REAL")
+    if "estado" not in cols:
+        conn.execute("ALTER TABLE servicios ADD COLUMN estado TEXT DEFAULT 'publicado'")
     conn.commit()
     return conn
 
@@ -97,6 +116,9 @@ class NuevoServicio(BaseModel):
     telefono: str = ""
     vulnerable: bool = False
     accion: str = "Ofrece"
+    categoria: str = ""
+    stock: int | None = None
+    precio: float | None = None
 
 @app.get("/health")
 def health():
@@ -143,10 +165,47 @@ def crear(s: NuevoServicio):
     conn = get_db()
     tipo = s.tipo if s.tipo in ("Servicio","Producto","Favor","Emergencia") else "Servicio"
     accion = s.accion if s.accion in ("Ofrece","Solicita") else "Ofrece"
-    cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo,telefono,vulnerable,accion) VALUES (?,?,?,?,?,?,0,?,?,?,?,?)",
-        (html.escape(s.oficio.strip()), html.escape(s.descripcion.strip()), html.escape(s.vecino.strip() or "Vecino"), html.escape(s.barrio.strip()), s.lat, s.lng, time.time(), tipo, s.telefono.strip() or None, 1 if s.vulnerable else 0, accion))
+    cur = conn.execute("INSERT INTO servicios (oficio,descripcion,vecino,barrio,lat,lng,vistos,creado,tipo,telefono,vulnerable,accion,categoria,stock,precio) VALUES (?,?,?,?,?,?,0,?,?,?,?,?,?,?,?)",
+        (html.escape(s.oficio.strip()), html.escape(s.descripcion.strip()), html.escape(s.vecino.strip() or "Vecino"), html.escape(s.barrio.strip()), s.lat, s.lng, time.time(), tipo, s.telefono.strip() or None, 1 if s.vulnerable else 0, accion, html.escape(s.categoria.strip()), s.stock, s.precio))
     conn.commit(); conn.close()
     return {"id": cur.lastrowid, "oficio": s.oficio}
+
+ADMIN_CODE = os.environ.get("ADMIN_CODE", "UTP-ADMIN-2026")
+
+class ReporteBody(BaseModel):
+    servicio_id: int
+    motivo: str = ""
+
+@app.post("/api/reportes")
+def crear_reporte(r: ReporteBody):
+    conn = get_db()
+    row = conn.execute("SELECT id FROM servicios WHERE id=?", (r.servicio_id,)).fetchone()
+    if not row:
+        conn.close()
+        raise HTTPException(status_code=404, detail="servicio no encontrado")
+    conn.execute("INSERT INTO reportes (servicio_id, motivo, creado) VALUES (?,?,?)", (r.servicio_id, html.escape(r.motivo.strip()[:200]), time.time()))
+    conn.execute("UPDATE servicios SET estado='reportado' WHERE id=?", (r.servicio_id,))
+    conn.commit(); conn.close()
+    return {"ok": True}
+
+@app.get("/api/reportes")
+def listar_reportes(codigo: str = ""):
+    if codigo != ADMIN_CODE:
+        raise HTTPException(status_code=403, detail="codigo invalido")
+    conn = get_db()
+    rows = conn.execute("SELECT r.id, r.servicio_id, r.motivo, r.estado, s.oficio FROM reportes r JOIN servicios s ON s.id=r.servicio_id ORDER BY r.id DESC").fetchall()
+    conn.close()
+    return [dict(x) for x in rows]
+
+@app.post("/api/servicios/{sid}/bajar")
+def bajar(sid: int, codigo: str = ""):
+    if codigo != ADMIN_CODE:
+        raise HTTPException(status_code=403, detail="codigo invalido")
+    conn = get_db()
+    conn.execute("UPDATE servicios SET estado='bajado' WHERE id=?", (sid,))
+    conn.execute("UPDATE reportes SET estado='resuelto' WHERE servicio_id=?", (sid,))
+    conn.commit(); conn.close()
+    return {"id": sid, "estado": "bajado"}
 
 class AsignacionBody(BaseModel):
     necesidad_id: int
