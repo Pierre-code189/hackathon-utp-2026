@@ -31,8 +31,10 @@
 let LAT=-11.981, LNG=-77.072, SERVICIOS=[];
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
-  const r=await fetch(`/api/servicios?lat=${LAT}&lng=${LNG}`);
+  let r; try{ r=await fetch(`/api/servicios?lat=${LAT}&lng=${LNG}`);}catch(e){ document.getElementById('lista').innerHTML='<li class="card">No pudimos cargar los servicios. Reintenta.</li>'; return; }
+  if(!r.ok){ document.getElementById('lista').innerHTML='<li class="card">No pudimos cargar los servicios. Reintenta.</li>'; return; }
   SERVICIOS=await r.json();
+  if(!SERVICIOS.length){document.getElementById('lista').innerHTML='<li class="card">Aún no hay vecinos publicados. Sé el primero.</li>';return;}
   document.getElementById('lista').innerHTML=SERVICIOS.map(s=>`
     <li class="card"><b>${s.oficio}</b> — ${s.descripcion}<br>
     <small>${s.vecino}${s.barrio?' · '+s.barrio:''} · a ${s.distancia_km} km</small><br>
