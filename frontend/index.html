@@ -61,7 +61,7 @@ async function cargarTablero(){
     '<h3>Asignaciones</h3>' + (asig.length?asig.map(a=>`<p>✓ ${a.recurso} → ${a.necesidad}</p>`).join(''):'<p>Sin asignaciones aún.</p>');
 }
 async function asignar(necesidad_id){
-  const rec = SERVICIOS.find(s=>s.tipo==='Favor' && s.accion!=='Solicita');
+  const rec = SERVICIOS.find(s=>s.tipo==='Favor' && s.accion!=='Solicita' && s.id!==necesidad_id) || SERVICIOS.find(s=>s.id!==necesidad_id && s.accion!=='Solicita');
   const recurso_id = rec ? rec.id : 8;
   const r = await fetch('/api/asignaciones',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({necesidad_id,recurso_id})});
   if(r.ok) cargarTablero(); else alert('No se pudo asignar.');
@@ -70,7 +70,8 @@ document.getElementById('tablero').addEventListener('toggle', e=>{ if(e.target.o
 function modoSimple(){document.body.classList.toggle('simple');document.getElementById('b_simple').textContent=document.body.classList.contains('simple')?'Modo simple: activado':'Modo simple (letra grande)';}
 if(navigator.geolocation){navigator.geolocation.getCurrentPosition(p=>{LAT=p.coords.latitude;LNG=p.coords.longitude;cargar();},()=>{}, {timeout:3000});}
 async function cargar(){
-  let r; try{ r=await fetch(`/api/servicios?lat=${LAT}&lng=${LNG}`);}catch(e){
+  const url=`/api/servicios?lat=${LAT}&lng=${LNG}`+(FILTRO?`&tipo=${encodeURIComponent(FILTRO)}`:'');
+  let r; try{ r=await fetch(url);}catch(e){
     const cache=localStorage.getItem('vr_cache');
     if(cache){SERVICIOS=JSON.parse(cache); pintar(); document.getElementById('msg').textContent='Sin conexión: mostrando última lista guardada.';}
     else {document.getElementById('lista').innerHTML='<li class="card">Sin conexión y sin datos guardados. Conéctate una vez para sincronizar.</li>';}

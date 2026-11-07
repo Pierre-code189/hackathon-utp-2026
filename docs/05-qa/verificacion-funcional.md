@@ -1,0 +1,21 @@
+# Verificación funcional — 2026-11-06 21:50 hora Perú (evidencia propia)
+## Tabla de funciones (curl + grep contra URL pública, no auto-aseguración)
+- Health / frontend: 200 / 200 ✓
+- Listado orden por distancia: ascendente OK, 13 registros ✓
+- Filtros: Servicio 6, Producto 2, Favor 2, Emergencia 3 ✓
+- Demanda (Solicita): Se necesita gasfitería + Traslado adulto mayor ✓
+- Emergencia + vulnerable: 3 grupos/servicios + 1 vulnerable ✓
+- WhatsApp: 6 con teléfono ✓
+- Zona del aval: misma zona → vistos_zona=1; otra zona → vistos sube, zona NO (vistos 6→7, zona 1→1) ✓
+- Asignaciones: crear/listar OK; 404 si no existe ✓
+- Errores: 404 servicio, 422 oficio vacío, 404 asignación ✓
+- Frontend markers: Modo simple, Modo:Emergencia, Se necesita, Tablero, Tutorial, Visto bueno, WhatsApp ✓
+- Tests: 15 passed ✓
+## Bug conocido declarado
+El botón "Asignar recurso" del frontend toma el primer no-Solicita sin excluir el propio id → puede asignarse taladro→taladro. En esta verificación se observó (id 4). No rompe la demo (sigue listando), pero queda marcado para corregir antes de la sustentación.
+## Límite
+Sin prueba en teléfono real ni con adultos mayores; capturas 390px sí revisadas.
+## Bug filtro UI (reportado por Pierre, confirmado 2026-11-06 21:55)
+- Causa: `filtrar()` guarda FILTRO pero `cargar()` hacia fetch sin `&tipo=` (la URL con FILTRO se habia perdido al extraer pintar()). Backend si filtraba (curl tipo=Producto OK), la UI siempre mostraba Todo.
+- Fix: URL = `/api/servicios?lat&lng` + (FILTRO?`&tipo=...`:'') en cargar(). Tests 15 passed, frontend 200.
+- Correccion del bug conocido de autoasignacion (taladro->taladro): se corrige en la misma pasada (filtrar recurso excluyendo el propio id).
